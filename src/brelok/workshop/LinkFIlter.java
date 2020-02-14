@@ -7,34 +7,34 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Jjo {
+public class LinkFIlter {
 
     final static String URL_JJO = "https://www.juniorjobsonly.com/jobs?page=";
+    private static Path path = Paths.get("/Users/brelok/workspace/jsoup junior_jobs_only/offers.txt");
 
     public static void main(String[] args) {
 
-        List<String> allHrefs = getHrefsFromCity("Wrocław");
+        List<String> juniorJobsOnly = getLinks("Poznań", "java");
 
-        List<String> filtredList = getOnlyFilteredOffers(allHrefs, "java");
-
-
-    }
-
-    private static List<String> getOnlyFilteredOffers(List<String> list, String filter) {
-        return list.stream()
-                .map(String::toLowerCase)
-                .filter(s -> s.contains(filter))
-                .collect(Collectors.toList());
+        try {
+            Files.write(path, juniorJobsOnly);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    private static List<String> getHrefsFromCity(String city) {
 
-        List<String> allHrefs = new ArrayList<>();
+    private static List<String> getLinks(String city, String filter) {
+
+        List<String> list = new ArrayList<>();
 
         for (int i = 1; i <= 20; i++) {
             List<String> href = new ArrayList<>();
@@ -53,13 +53,23 @@ public class Jjo {
                         href.add(e.attr("href"));
                     }
                 }
-
-                allHrefs.addAll(href);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            list.addAll(href);
         }
-        return allHrefs;
+
+        List<String> filtredList = list.stream()
+                .map(String::toLowerCase)
+                .filter(s -> s.contains(filter.toLowerCase()))
+                .collect(Collectors.toList());
+
+        List<String> notFoundList = new ArrayList<>();
+        notFoundList.add("Nic nie znaleziono, zmień parametry");
+
+        if (filtredList.size() < 1) return notFoundList;
+        else {
+            return filtredList;
+        }
     }
 }
