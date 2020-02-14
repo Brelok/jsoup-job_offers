@@ -21,7 +21,7 @@ public class LinkFIlter {
 
     public static void main(String[] args) {
 
-        List<String> juniorJobsOnly = getLinks("Poznań", "java");
+        List<String> juniorJobsOnly = getLinks("Wrocław", "java");
 
         try {
             Files.write(path, juniorJobsOnly);
