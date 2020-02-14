@@ -1,0 +1,1 @@
+This is program about read all offers on site juniorjobsonly.eu and filter with some specifiacion and put into file. 
