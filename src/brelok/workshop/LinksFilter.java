@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LinkFIlter {
+public class LinksFilter {
 
     final static String URL_JJO = "https://www.juniorjobsonly.com/jobs?page=";
     final static String URL_BJ = "https://bulldogjob.pl/companies/jobs?page=";
@@ -37,6 +37,8 @@ public class LinkFIlter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println(allPortals);
 
     }
 
@@ -87,7 +89,6 @@ public class LinkFIlter {
             return filtredList;
         }
     }
-
 
     private static List<String> getLinks_JJO(String city, String filter) {
 
