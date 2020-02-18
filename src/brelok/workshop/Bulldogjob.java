@@ -15,39 +15,11 @@ public class Bulldogjob {
 
     final static String URL_BJ = "https://bulldogjob.pl/companies/jobs?page=";
     final static String javascript = "Javascript";
+    final static int numberOfPages = 7;
 
     static List<String> getLinks_BJ (String city, String filter) {
-        List<String> list = new ArrayList<>();
 
-        for (int i = 1; i <= 7; i++) {
-            List<String> href = new ArrayList<>();
-
-            try {
-                Connection.Response homePage = Jsoup.connect(URL_BJ + i)
-                        .method(Connection.Method.GET)
-                        .execute();
-
-                Document document = homePage.parse();
-
-                Elements elementsLi = document.select("body > .main-content > .app-content.listing > " +
-                        ".container > #search-result > .col-sm-10.col-sm-offset-1 > " +
-                        ".search-results > .results-list.list-unstyled.content > li");
-
-                for (Element e : elementsLi) {
-                    if (!e.is(".results-list-item.subscribe-search")) {
-
-                        if (e.child(0).child(1).child(0).select(".pop-mobile").text().contains(city)) {
-                            href.add(e.child(0).child(0).child(0).attr("href"));
-                        }
-                    }
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            list.addAll(href);
-        }
+        List<String> list = getLinksWithCity(city);
 
         List<String> filtredList = list.stream()
                 .map(String::toLowerCase)
@@ -65,37 +37,7 @@ public class Bulldogjob {
     }
 
     static List<String> getLinks_BJ (String city, String filterOne, String filterTwo) {
-        List<String> list = new ArrayList<>();
-
-        for (int i = 1; i <= 7; i++) {
-            List<String> href = new ArrayList<>();
-
-            try {
-                Connection.Response homePage = Jsoup.connect(URL_BJ + i)
-                        .method(Connection.Method.GET)
-                        .execute();
-
-                Document document = homePage.parse();
-
-                Elements elementsLi = document.select("body > .main-content > .app-content.listing > " +
-                        ".container > #search-result > .col-sm-10.col-sm-offset-1 > " +
-                        ".search-results > .results-list.list-unstyled.content > li");
-
-                for (Element e : elementsLi) {
-                    if (!e.is(".results-list-item.subscribe-search")) {
-
-                        if (e.child(0).child(1).child(0).select(".pop-mobile").text().contains(city)) {
-                            href.add(e.child(0).child(0).child(0).attr("href"));
-                        }
-                    }
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            list.addAll(href);
-        }
+        List<String> list = getLinksWithCity(city);
 
         List<String> filtredList = list.stream()
                 .map(String::toLowerCase)
@@ -111,5 +53,37 @@ public class Bulldogjob {
         else {
             return filtredList;
         }
+    }
+
+    private static List<String> getLinksWithCity(String city){
+             List<String> list = new ArrayList<>();
+
+        for (int i = 1; i <= numberOfPages; i++) {
+            List<String> href = new ArrayList<>();
+
+            try {
+                Connection.Response homePage = Jsoup.connect(URL_BJ + i)
+                        .method(Connection.Method.GET)
+                        .execute();
+
+                Document document = homePage.parse();
+
+                Elements elementsLi = document.select("body > .main-content > .app-content.listing > " +
+                        ".container > #search-result > .col-sm-10.col-sm-offset-1 > " +
+                        ".search-results > .results-list.list-unstyled.content > li");
+
+                elementsLi.stream()
+                        .filter(element -> !element.is(".results-list-item.subscribe-search"))
+                        .filter(element -> element.child(0).child(1).child(0).select(".pop-mobile").text().contains(city))
+                        .forEach(element -> href.add(element.child(0).child(0).child(0).attr("href")));
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            list.addAll(href);
+        }
+        return list;
     }
 }

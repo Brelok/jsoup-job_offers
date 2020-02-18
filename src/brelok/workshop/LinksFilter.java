@@ -23,10 +23,9 @@ public class LinksFilter {
 
     public static void main(String[] args) {
 
+        List<String> juniorJobsOnly = getLinks_JJO("Wrocław", "java");
 
-        List<String> juniorJobsOnly = getLinks_JJO("Wrocław", "java", "junior");
-
-        List<String> bulldogJobs = getLinks_BJ("Wrocław", "java", "junior");
+        List<String> bulldogJobs = getLinks_BJ("Wrocław", "Python");
 
         List<String> allPortals = new ArrayList<>();
         allPortals.addAll(juniorJobsOnly);
@@ -39,8 +38,5 @@ public class LinksFilter {
         }
 
         System.out.println(allPortals);
-
     }
-
-
 }
